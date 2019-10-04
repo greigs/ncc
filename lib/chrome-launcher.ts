@@ -220,7 +220,7 @@ var ChromeLauncher = (() => {
 
     class ChromeLauncher {
         prepared = false;
-        pollInterval: number = 500;
+        pollInterval: number = 2000;
         autoSelectChrome: boolean;
         TMP_PROFILE_DIR: string;
         outFile?: number;

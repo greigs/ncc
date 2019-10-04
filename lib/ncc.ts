@@ -42,7 +42,7 @@ var NCC = Object.defineProperties(
 
         var attempts = 0;
         function connect() {
-            var url = `http://localhost:${NCC.options.port}/json`;
+            var url = `http://127.0.0.1:${NCC.options.port}/json`;
 
             http.get(url, res => {
                 var rdJson = '';
