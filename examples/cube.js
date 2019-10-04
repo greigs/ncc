@@ -18,24 +18,13 @@ const canvas = ncc({ logLevel: 'debug' }, async function (err, canvas) {
     //await sleep(1000);
 for (let i=0; i< 1000; i++){
 
-    var grd = ctx.createLinearGradient(0, 0, 256, 256);
-    grd.addColorStop(0, "slateGray");
+    grd = ctx.createLinearGradient(0, 0, 384, 64);
+    grd.addColorStop(0, "rgb(" + i % 255 + ", 102, 102)");
     grd.addColorStop(1, "white");
 
     ctx.fillStyle = grd;
     ctx.fillRect(0, 0, 384,64)
 
-    // --- INFO ---
-    //  now we reuse the filled canvas in a pattern and draw it back to canvas
-
-    var pat = ctx.createPattern(canvas, "repeat");
-    ctx.rect(0, 0, 384, 64);
-    ctx.fillStyle = pat;
-    ctx.scale(.1 + (i * .01), .1 + (i * .01))
-
-    ctx.fill()
-
-    //await sleep(1);
     await canvas.toDataURL('image/jpeg', .5)(async function (err, val) {
         if (err) throw err;
 
@@ -44,17 +33,12 @@ for (let i=0; i< 1000; i++){
         if (i % 20 == 0){
           console.log(i)
         }
+        if (i % 900 == 0){
+            console.log(data)
+        }
     })
 
 }
-    //  --- ALTERNATIVES ---
-    //  in example 3 you learned return values are accessible through callbacks
-    //  this is also true for gradients and patterns:
-    //
-    //    "ctx.createLinearGradient(0, 0, width, height)(function(err,gra){...)"
-    //
-    //  but you also have the 'early-access' option allready shown for the initial canvas
-    //  in example 2. This is holds for all ncc-proxys-ojects (e.g image, ctx, ...)
-    console.log(data)
+   
 })
 
