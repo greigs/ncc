@@ -1,44 +1,49 @@
-// NCC Example 4 - gradients and patterns
-
-var ncc = require('../index.js'); // require('ncc');
-function sleep(ms) {
+var ncc = require('../index.js');
+var jpeg = require('jpeg-js');
+const sleep = (ms) => {
     return new Promise(resolve => setTimeout(resolve, ms));
-  }
-data = []
+}
+
+const queueForLedRender = (raw) => {
+    // do something
+}
+const howLongShouldIWait = () => 15
+
+const frameWidth = 384
+const frameHeight = 64
 const canvas = ncc({ logLevel: 'debug' }, async function (err, canvas) {
     if (err) throw err;
 
-    canvas.width = 384;
-    canvas.height = 64;
+    canvas.width = frameWidth;
+    canvas.height = frameHeight;
 
-    var ctx = canvas.getContext("2d");
-
-    // --- INFO ---
-    //  first we fill the canvas with a gray-white gradient from ul to lr
-    //await sleep(1000);
-for (let i=0; i< 1000; i++){
-
-    grd = ctx.createLinearGradient(0, 0, 384, 64);
-    grd.addColorStop(0, "rgb(" + i % 255 + ", 102, 102)");
-    grd.addColorStop(1, "white");
-
-    ctx.fillStyle = grd;
-    ctx.fillRect(0, 0, 384,64)
-
-    await canvas.toDataURL('image/jpeg', .5)(async function (err, val) {
-        if (err) throw err;
-
-        //console.log(">>> dataURL: '" + val.substring(0, 40) + "...' [length: " + val.length + "]");
-        data.push(val)
-        if (i % 20 == 0){
-          console.log(i)
+    const ctx = canvas.getContext("2d");
+    let prevTimeStamp = new Date()
+    let prevFrameCount = 0
+    // render 10000 frames
+    for (let frameCount=0; frameCount< 10000; frameCount++){
+        const wait = howLongShouldIWait()
+        if (wait > 0){
+           await sleep(wait)
         }
-        if (i % 900 == 0){
-            console.log(data)
-        }
-    })
+        const grd = ctx.createLinearGradient(0, 0, frameWidth, frameHeight);
+        grd.addColorStop(0, "rgb(" + frameCount % 255 + ", 102, 102)");
+        grd.addColorStop(1, "white");
+        ctx.fillStyle = grd;
+        ctx.fillRect(0, 0, frameWidth, frameHeight)
 
-}
-   
+        await canvas.toDataURL('image/jpeg', .99)(async function (err, val) {
+            var decodedJpeg = Buffer.from(val.substring(23),'base64'); // strip header
+            var rawImageData = jpeg.decode(decodedJpeg);
+            queueForLedRender(rawImageData)
+            var timeNow = new Date()
+            if (timeNow - prevTimeStamp >= 1000){
+                let framesRendered = frameCount - prevFrameCount
+                console.log(framesRendered + 'fps')
+                prevTimeStamp = timeNow
+                prevFrameCount = frameCount
+            }
+        })
+    }
 })
 
