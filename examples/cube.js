@@ -1,5 +1,6 @@
 var ncc = require('../index.js');
-var jpeg = require('jpeg-js');
+//var jpeg = require('jpeg-js');
+var inkjet = require('inkjet');
 const sleep = (ms) => {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -7,7 +8,7 @@ const sleep = (ms) => {
 const queueForLedRender = (raw) => {
     // do something
 }
-const howLongShouldIWait = () => 15
+const howLongShouldIWait = () => 0
 
 const frameWidth = 384
 const frameHeight = 64
@@ -31,18 +32,31 @@ const canvas = ncc({ logLevel: 'debug' }, async function (err, canvas) {
         // grd.addColorStop(1, "white");
         // ctx.fillStyle = grd;
         // ctx.fillRect(0, 0, frameWidth, frameHeight)
+        //ctx.fillRect(0, 0, frameWidth, frameHeight)
+       
 
         await canvas.toDataURL('image/jpeg', .99)(async function (err, val) {
-            var decodedJpeg = Buffer.from(val.substring(23),'base64'); // strip header
-            var rawImageData = jpeg.decode(decodedJpeg);
-            queueForLedRender(rawImageData)
-            var timeNow = new Date()
+            let startFrameTime = new Date()
+            let decodedJpeg = Buffer.from(val.substring(23),'base64'); // strip header
+            let decodedJpegTime = new Date()
+            //let rawImageData = jpeg.decode(decodedJpeg);
+
+            inkjet.decode(decodedJpeg, function(err, rawImageData) {
+              // decoded: { width: number, height: number, data: Uint8Array }
+
+            let rawImageDataTime = new Date()
+            queueForLedRender(rawImageData.data)
+            let timeNow = new Date()
             if (timeNow - prevTimeStamp >= 1000){
                 let framesRendered = frameCount - prevFrameCount
                 console.log(framesRendered + 'fps')
+                console.log('decodedJpeg: ' + (decodedJpegTime - startFrameTime))
+                console.log('rawImageData: ' + (rawImageDataTime - decodedJpegTime))
                 prevTimeStamp = timeNow
                 prevFrameCount = frameCount
             }
+
+            });
         })
     }
 })

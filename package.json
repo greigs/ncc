@@ -10,6 +10,7 @@
     "dev:run": "nodemon index.js"
   },
   "dependencies": {
+    "inkjet": "^2.1.2",
     "mkdirp": "^0.5.1",
     "rimraf": "^2.6.1",
     "tracer": "^0.8.7",
