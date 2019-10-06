@@ -12,30 +12,30 @@ const queueForLedRender = (raw) => {
 const howLongShouldIWait = () => 0
 
 
-
-
-
-const matrix = new LedMatrix.LedMatrix(
-  {
-    ...LedMatrix.LedMatrix.defaultMatrixOptions(),
-    rows: 64,
-    cols: 64,
-    chainLength: 6,
-    hardwareMapping: LedMatrix.GpioMapping.AdafruitHatPwm,
-    pixelMapperConfig: LedMatrix.LedMatrixUtils.encodeMappers({ type: LedMatrix.PixelMapperType.U }),
-  },
-  {
-    ...LedMatrix.LedMatrix.defaultRuntimeOptions(),
-    gpioSlowdown: 1,
-  }
-);
-console.log('matrix:' + matrix)
+const createMatrix = () => {
+    return new LedMatrix.LedMatrix(
+    {
+        ...LedMatrix.LedMatrix.defaultMatrixOptions(),
+        rows: 64,
+        cols: 64,
+        chainLength: 6,
+        hardwareMapping: LedMatrix.GpioMapping.AdafruitHatPwm,
+        pixelMapperConfig: LedMatrix.LedMatrixUtils.encodeMappers({ type: LedMatrix.PixelMapperType.U }),
+    },
+    {
+        ...LedMatrix.LedMatrix.defaultRuntimeOptions(),
+        gpioSlowdown: 1,
+    }
+    )
+}
 
 
 const canvas = ncc({ logLevel: 'debug' }, async function (err, canvas) {
     if (err) throw err;
 
     const ctx = canvas.getContext("2d");
+
+    const matrix = createMatrix()
     let prevTimeStamp = new Date()
     let prevFrameCount = 0
     // render 10000 frames
