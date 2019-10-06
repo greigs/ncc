@@ -2,11 +2,13 @@ var ncc = require('../index.js');
 //var jpeg = require('jpeg-js');
 var inkjet = require('inkjet');
 const LedMatrix = require('rpi-led-matrix');
+let matrix
 const sleep = (ms) => {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 const queueForLedRender = (raw) => {
+    let doMatrixRender = matrix
     // do something
 }
 const howLongShouldIWait = () => 0
@@ -35,7 +37,7 @@ const canvas = ncc({ logLevel: 'debug' }, async function (err, canvas) {
 
     const ctx = canvas.getContext("2d");
 
-    const matrix = createMatrix()
+    matrix = createMatrix()
     let prevTimeStamp = new Date()
     let prevFrameCount = 0
     // render 10000 frames
