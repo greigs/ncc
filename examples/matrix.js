@@ -14,7 +14,7 @@ const queueForLedRender = (raw) => {
   
       matrix.drawBuffer(buffer).sync();
 }
-const howLongShouldIWait = () => 0
+const howLongShouldIWait = () => 100
 
 
 const createMatrix = () => {
