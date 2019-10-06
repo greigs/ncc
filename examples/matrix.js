@@ -15,21 +15,6 @@ const howLongShouldIWait = () => 0
 
 
 
-const matrix = new LedMatrix.LedMatrix(
-  {
-    ...LedMatrix.LedMatrix.defaultMatrixOptions(),
-    rows: 64,
-    cols: 64,
-    chainLength: 6,
-    hardwareMapping: LedMatrix.GpioMapping.AdafruitHatPwm,
-    pixelMapperConfig: LedMatrix.LedMatrixUtils.encodeMappers({ type: LedMatrix.PixelMapperType.U }),
-  },
-  {
-    ...LedMatrix.LedMatrix.defaultRuntimeOptions(),
-    gpioSlowdown: 1,
-  }
-);
-
 const canvas = ncc({ logLevel: 'debug' }, async function (err, canvas) {
     if (err) throw err;
 
@@ -63,4 +48,22 @@ const canvas = ncc({ logLevel: 'debug' }, async function (err, canvas) {
         })
     }
 })
+
+
+
+const matrix = new LedMatrix.LedMatrix(
+    {
+      ...LedMatrix.LedMatrix.defaultMatrixOptions(),
+      rows: 64,
+      cols: 64,
+      chainLength: 6,
+      hardwareMapping: LedMatrix.GpioMapping.AdafruitHatPwm,
+      pixelMapperConfig: LedMatrix.LedMatrixUtils.encodeMappers({ type: LedMatrix.PixelMapperType.U }),
+    },
+    {
+      ...LedMatrix.LedMatrix.defaultRuntimeOptions(),
+      gpioSlowdown: 1,
+    }
+  );
+  
 
