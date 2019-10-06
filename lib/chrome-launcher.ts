@@ -224,7 +224,7 @@ var ChromeLauncher = (() => {
             ];
 
             if (process.platform === 'linux') {
-                flags.push('--disable-setuid-sandbox');
+                flags.push('--no-sandbox --disable-setuid-sandbox');
             }
 
             flags.push(...this.chromeFlags);
