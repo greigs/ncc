@@ -15,6 +15,8 @@
     "rimraf": "^2.6.1",
     "rpi-led-matrix": "^1.4.0",
     "tracer": "^0.8.7",
+    "tsc": "^1.20150623.0",
+    "typescript": "^3.6.3",
     "ws": "^2.3.1"
   },
   "devDependencies": {
