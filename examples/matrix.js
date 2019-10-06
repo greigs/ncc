@@ -8,8 +8,11 @@ const sleep = (ms) => {
 }
 
 const queueForLedRender = (raw) => {
-    let doMatrixRender = matrix
-    // do something
+    const buffer = Buffer.of(
+        ...[...Array(matrix.width() * matrix.height() * 3).keys()].map(() => Math.random() > 0.4 ? 0xFF : 0x00)
+      );
+  
+      matrix.drawBuffer(buffer).sync();
 }
 const howLongShouldIWait = () => 0
 
