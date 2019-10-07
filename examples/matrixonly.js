@@ -25,6 +25,8 @@ const createMatrix = () => {
         chainLength: 6,
         hardwareMapping: LedMatrix.GpioMapping.AdafruitHatPwm,
         pixelMapperConfig: LedMatrix.LedMatrixUtils.encodeMappers({ type: LedMatrix.PixelMapperType.U }),
+        showRefreshRate: true
+
     },
     {
         ...LedMatrix.LedMatrix.defaultRuntimeOptions(),
@@ -33,4 +35,5 @@ const createMatrix = () => {
     )
 }
 
+createMatrix()
 queueForLedRender()
