@@ -6,15 +6,23 @@ let matrix
 const sleep = (ms) => {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
+let buffer
 
 const queueForLedRender = (raw) => {
-    const buffer = Buffer.of(
+    let timeStart = new Date()
+    if (!buffer)
+    {
+        buffer = Buffer.of(
         ...[...Array(matrix.width() * matrix.height() * 3).keys()].map(() => Math.random() > 0.4 ? 0xFF : 0x00)
-      );
-  
+        );
+    }
+    let timeAfterArray = new Date()
+    //console.log('afterArray:' + (timeAfterArray - timeStart)) 
       matrix.drawBuffer(buffer).sync();
+    let timeNow = new Date()
+    //console.log('afterSync:' + (timeNow - timeAfterArray))
 }
-const howLongShouldIWait = () => 100
+const howLongShouldIWait = () => 0
 
 
 const createMatrix = () => {
