@@ -1,19 +1,51 @@
 var ncc = require('../index.js');
 //var jpeg = require('jpeg-js');
 var inkjet = require('inkjet');
+//const LedMatrix = require('rpi-led-matrix');
+let matrix
 const sleep = (ms) => {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 const queueForLedRender = (raw) => {
-    // do something
+    let timeStart = new Date()
+    const buffer = Buffer.of(
+        ...[...Array(384 * 64 * 3).keys()].map(() => Math.random() > 0.4 ? 0xFF : 0x00)
+        );
+    
+    let timeAfterArray = new Date()
+    //console.log('afterArray:' + (timeAfterArray - timeStart)) 
+    //  matrix.drawBuffer(buffer).sync();
+    let timeNow = new Date()
+    //console.log('afterSync:' + (timeNow - timeAfterArray))
 }
 const howLongShouldIWait = () => 0
+
+
+const createMatrix = () => {
+    return new LedMatrix.LedMatrix(
+    {
+        ...LedMatrix.LedMatrix.defaultMatrixOptions(),
+        rows: 64,
+        cols: 64,
+        chainLength: 6,
+        hardwareMapping: LedMatrix.GpioMapping.AdafruitHatPwm,
+        pixelMapperConfig: LedMatrix.LedMatrixUtils.encodeMappers({ type: LedMatrix.PixelMapperType.U }),
+    },
+    {
+        ...LedMatrix.LedMatrix.defaultRuntimeOptions(),
+        gpioSlowdown: 1,
+    }
+    )
+}
+
 
 const canvas = ncc({ logLevel: 'debug' }, async function (err, canvas) {
     if (err) throw err;
 
     const ctx = canvas.getContext("2d");
+
+    //matrix = createMatrix()
     let prevTimeStamp = new Date()
     let prevFrameCount = 0
     // render 10000 frames
