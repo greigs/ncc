@@ -29,7 +29,7 @@ const createMatrix = () => {
         ...LedMatrix.LedMatrix.defaultMatrixOptions(),
         rows: 64,
         cols: 64,
-        chainLength: 1,
+        chainLength: 6,
         hardwareMapping: LedMatrix.GpioMapping.AdafruitHatPwm,
         pixelMapperConfig: LedMatrix.LedMatrixUtils.encodeMappers({ type: LedMatrix.PixelMapperType.U }),
     },
