@@ -33,7 +33,6 @@ const createMatrix = () => {
 
 const canvas = ncc({ logLevel: 'debug' }, async function (err, canvas) {
     if (err) throw err;
-
     const ctx = canvas.getContext("2d");
 
     //matrix = createMatrix()

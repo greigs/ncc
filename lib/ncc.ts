@@ -50,7 +50,7 @@ var NCC = Object.defineProperties(
                 res.on('data', chunk => rdJson += chunk);
 
                 res.on('end', () => {
-                    var ncc_ = JSON.parse(rdJson).find(i => i.title === "ncc" || path.basename(i.url) === "ncc.html");
+                    var ncc_ = JSON.parse(rdJson).find(i => i.title === "ncc" || path.basename(i.url) === "index.html");
 
                     if (!ncc_) {
                         if (attempts < NCC.options.retry) {
@@ -94,8 +94,8 @@ var NCC = Object.defineProperties(
                 })
             })
         }
-
-        var index = path.join(__dirname, 'ncc.html');
+        //var index = path.join('__dirname', 'index.html');
+        var index = 'http://localhost:8080/index.html';
         var launcher = new ChromeLauncher({
             port: NCC.options.port,
             autoSelectChrome: true,
@@ -308,12 +308,12 @@ var CanvasPDM = {
     width_: {
         enumerable: DEBUG,
         writable: true,
-        value: 300
+        value: 384
     },
     height_: {
         enumerable: DEBUG,
         writable: true,
-        value: 150
+        value: 64
     },
 
     // Web API: https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement
