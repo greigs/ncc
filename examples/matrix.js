@@ -28,8 +28,8 @@ const createMatrix = () => {
     {
         ...LedMatrix.LedMatrix.defaultMatrixOptions(),
         rows: 64,
-        cols: 64,
-        chainLength: 6,
+        cols: 384,
+        chainLength: 1,
         hardwareMapping: LedMatrix.GpioMapping.AdafruitHatPwm,
         pixelMapperConfig: LedMatrix.LedMatrixUtils.encodeMappers({ type: LedMatrix.PixelMapperType.U }),
     },
@@ -56,7 +56,7 @@ const canvas = ncc({ logLevel: 'debug' }, async function (err, canvas) {
            await sleep(wait)
         }
 
-        await canvas.toDataURL('image/jpeg', .9)(async function (err, val) {
+        await canvas.toDataURL('image/jpeg', .8)(async function (err, val) {
             let startFrameTime = new Date()
             let decodedJpeg = Buffer.from(val.substring(23),'base64'); // strip header
             let decodedJpegTime = new Date()
