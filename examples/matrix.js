@@ -10,15 +10,13 @@ let buffer
 
 const queueForLedRender = (raw) => {
     let timeStart = new Date()
-    if (!buffer)
-    {
-        buffer = Buffer.of(
-        ...[...Array(matrix.width() * matrix.height() * 3).keys()].map(() => Math.random() > 0.4 ? 0xFF : 0x00)
-        );
-    }
     let timeAfterArray = new Date()
     //console.log('afterArray:' + (timeAfterArray - timeStart)) 
-      matrix.drawBuffer(buffer).sync();
+    matrix.drawBuffer(raw).sync();
+
+
+
+
     let timeNow = new Date()
     //console.log('afterSync:' + (timeNow - timeAfterArray))
 }
@@ -30,8 +28,8 @@ const createMatrix = () => {
     {
         ...LedMatrix.LedMatrix.defaultMatrixOptions(),
         rows: 64,
-        cols: 64,
-        chainLength: 6,
+        cols: 384,
+        chainLength: 1,
         hardwareMapping: LedMatrix.GpioMapping.AdafruitHatPwm,
         pixelMapperConfig: LedMatrix.LedMatrixUtils.encodeMappers({ type: LedMatrix.PixelMapperType.U }),
     },
@@ -58,11 +56,11 @@ const canvas = ncc({ logLevel: 'debug' }, async function (err, canvas) {
            await sleep(wait)
         }
 
-        await canvas.toDataURL('image/jpeg', .85)(async function (err, val) {
+        await canvas.toDataURL('image/jpeg', .8)(async function (err, val) {
             let startFrameTime = new Date()
             let decodedJpeg = Buffer.from(val.substring(23),'base64'); // strip header
             let decodedJpegTime = new Date()
-            inkjet.decode(decodedJpeg, function(err, rawImageData) {
+            inkjet.decode(decodedJpeg,function(err, rawImageData) {
                 let rawImageDataTime = new Date()
                 queueForLedRender(rawImageData.data)
                 let timeNow = new Date()

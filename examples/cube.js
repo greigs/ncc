@@ -8,16 +8,7 @@ const sleep = (ms) => {
 }
 
 const queueForLedRender = (raw) => {
-    let timeStart = new Date()
-    const buffer = Buffer.of(
-        ...[...Array(384 * 64 * 3).keys()].map(() => Math.random() > 0.4 ? 0xFF : 0x00)
-        );
-    
-    let timeAfterArray = new Date()
-    //console.log('afterArray:' + (timeAfterArray - timeStart)) 
-    //  matrix.drawBuffer(buffer).sync();
-    let timeNow = new Date()
-    //console.log('afterSync:' + (timeNow - timeAfterArray))
+
 }
 const howLongShouldIWait = () => 0
 
@@ -42,7 +33,6 @@ const createMatrix = () => {
 
 const canvas = ncc({ logLevel: 'debug' }, async function (err, canvas) {
     if (err) throw err;
-
     const ctx = canvas.getContext("2d");
 
     //matrix = createMatrix()
