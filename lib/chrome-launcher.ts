@@ -88,52 +88,7 @@ var ChromeLauncher = (() => {
      * 3. Look for google-chrome-stable & google-chrome executables by using the which command
      */
     function linux() {
-        let installations: Array<string> = [];
-
-        // 1. Look into LIGHTHOUSE_CHROMIUM_PATH env variable
-        if (canAccess(process.env.LIGHTHOUSE_CHROMIUM_PATH)) {
-            installations.push(process.env.LIGHTHOUSE_CHROMIUM_PATH);
-        }
-
-        // 2. Look into the directories where .desktop are saved on gnome based distro's
-        const desktopInstallationFolders = [
-            path.join(require('os').homedir(), '.local/share/applications/'),
-            '/usr/share/applications/',
-        ];
-        desktopInstallationFolders.forEach(folder => {
-            installations = installations.concat(findChromeExecutables(folder));
-        });
-
-        // Look for google-chrome-stable & google-chrome executables by using the which command
-        const executables = [
-            'google-chrome-stable',
-            'google-chrome',
-        ];
-        executables.forEach((executable: string) => {
-            try {
-                const chromePath = execFileSync('which', [executable]).toString().split(newLineRegex)[0];
-
-                if (canAccess(chromePath)) {
-                    installations.push(chromePath);
-                }
-            } catch (e) {
-                // Not installed.
-            }
-        });
-
-        if (!installations.length) {
-            throw new Error(
-                'The environment variable LIGHTHOUSE_CHROMIUM_PATH must be set to ' +
-                'executable of a build of Chromium version 54.0 or later.');
-        }
-
-        const priorities: Priorities = [
-            { regex: /chrome-wrapper$/, weight: 51 }, { regex: /google-chrome-stable$/, weight: 50 },
-            { regex: /google-chrome$/, weight: 49 },
-            { regex: new RegExp(process.env.LIGHTHOUSE_CHROMIUM_PATH), weight: 100 }
-        ];
-
-        return sort(uniq(installations.filter(Boolean)), priorities);
+        return ['/usr/bin/chromium-browser'];
     }
 
     function win32() {
@@ -220,7 +175,7 @@ var ChromeLauncher = (() => {
 
     class ChromeLauncher {
         prepared = false;
-        pollInterval: number = 500;
+        pollInterval: number = 2000;
         autoSelectChrome: boolean;
         TMP_PROFILE_DIR: string;
         outFile?: number;
@@ -269,6 +224,7 @@ var ChromeLauncher = (() => {
             ];
 
             if (process.platform === 'linux') {
+                flags.push('--no-sandbox');
                 flags.push('--disable-setuid-sandbox');
             }
 
