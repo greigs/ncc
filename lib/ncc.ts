@@ -95,7 +95,7 @@ var NCC = Object.defineProperties(
             })
         }
         //var index = path.join('__dirname', 'index.html');
-        var index = 'http://localhost:8080/index.html';
+        var index = 'http://localhost:8080/example/index.html';
         var launcher = new ChromeLauncher({
             port: NCC.options.port,
             autoSelectChrome: true,
