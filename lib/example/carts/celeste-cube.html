@@ -665,7 +665,7 @@ canvas{
 	var gpio = getP8Gpio();
 var unsubscribe = gpio.subscribe(function(indices) {
 	playerx = readFromGpioUnsigned(gpio,4, 8)
-	console.log(playerx)
+	//console.log(playerx)
   
 });
 	
@@ -683,40 +683,7 @@ document.addEventListener('DOMContentLoaded',function (){
 		    // void ctx.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
 	
 	
-			var parts = [];
-			var cx = 128 / 2;
-			var cy = 64;
-			var w = 128;
-			var h = 64;
-			parts.push({
-				x: 0,
-				y: 0,
-				points: [{
-					x: 0,
-					y: 0
-				}, {
-					x: cx,
-					y: cy
-				}, {
-					x: 0,
-					y: h
-				}]
-			});
-
-			parts.push({
-				x: 0,
-				y: 0,
-				points: [{
-					x: 64,
-					y: 64
-				}, {
-					x: 128,
-					y: 0
-				}, {
-					x: 128,
-					y: 64
-				}]
-			});
+			
 
 
 
@@ -734,8 +701,6 @@ document.addEventListener('DOMContentLoaded',function (){
 				//ctx.restore();
 			}
 
-			window.tx= 0;
-			window.ty= 0;
 
 			draw(cinEl,cout);
 
@@ -744,9 +709,58 @@ document.addEventListener('DOMContentLoaded',function (){
 			ty = -64;
 
 			function draw(v,c) {
-				// draw bottom
-				c.drawImage(v,0,64,128,64,0,64,128,64);
-			
+				c.clearRect(0,0,128,128);
+                var midpointx = 128 - playerx ;
+				console.log(midpointx);
+				var parts = [];
+				var cx = midpointx;
+				var cy = 64;
+				var w = 128;
+				var h = 64;
+
+				// left screen triangle
+				parts.push({
+					x: 0,
+					y: 0,
+					points: [{
+						x: 0,
+						y: 0
+					},
+					{
+						x: cx - 64,
+						y: 0
+					},
+					{
+						x: 64,
+						y: 64
+					}, {
+						x: 0,
+						y: 128
+					}]
+				});
+
+				// right screen triangle
+				parts.push({
+					x: 0,
+					y: 0,
+					points: [{
+						x: 64,
+						y: 64
+					}, 
+					{
+						x: cx - 64,
+						y: 64
+					},
+					{
+						x: 128,
+						y: 0
+					}, {
+						x: 128,
+						y: 64
+					}]
+				});
+
+				
 			    // draw rotated right triangle
 			    ctx.save();
 				ctx.translate(-1 * window.tx, -1 * window.ty);
@@ -765,6 +779,10 @@ document.addEventListener('DOMContentLoaded',function (){
 				ctx.clip();
 				ctx.drawImage(v, part.x, part.y);				
 				ctx.restore();
+
+				// draw bottom
+				c.drawImage(v,0,64,128,64,0,64,128,64);
+			
 
 				setTimeout(draw,20,v,c);
 			}
