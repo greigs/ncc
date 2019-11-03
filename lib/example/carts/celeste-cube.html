@@ -174,7 +174,7 @@
 	// otherwise difficult to catch every case layout needs to be updated
 	function p8_update_layout()
 	{
-		var canvas = document.getElementById("canvas");
+		var canvas = document.getElementById("canvasin");
 		var p8_playarea = document.getElementById("p8_playarea");
 		var p8_container = document.getElementById("p8_container");
 		var p8_frame = document.getElementById("p8_frame");
@@ -601,8 +601,8 @@ canvas{
 			</div>
 
 			<div style="display:flex; position:relative">
-				<canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault();" ></canvas>
-				<canvas class="emscripten" id="canvas2" oncontextmenu="event.preventDefault();" ></canvas>
+				<canvas class="emscripten" id="canvasin" oncontextmenu="event.preventDefault();"  width="128" height="128"></canvas>
+				
 				
 				<div id="menu_buttons" style="width:0px; height:164px">
 					<div class="p8_menu_button" style="position:relative; left:44px" id="p8b_controls" onClick="Module.pico8ToggleControlMenu();"></div>					
@@ -635,6 +635,7 @@ canvas{
 	</div> <!-- p8_container -->
 
 </div> <!-- p8_frame -->
+<canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault();" width="192" height="64"></canvas>
 </div> <!-- size limit -->
 
 <script type="text/javascript">
@@ -642,7 +643,7 @@ canvas{
 	p8_update_layout();
 	p8_update_button_icons();
 
-	var canvas = document.getElementById("canvas");
+	var canvas = document.getElementById("canvasin");
 	Module = {};
 	Module.canvas = canvas;
 
@@ -671,21 +672,14 @@ var unsubscribe = gpio.subscribe(function(indices) {
 	
 
 document.addEventListener('DOMContentLoaded',function (){
-			var cinEl = document.getElementById('canvas');
+			var cinEl = document.getElementById('canvasin');
 			
-			var coutEl = document.getElementById('canvas2');
+			var coutEl = document.getElementById('canvas');
 			var cout = coutEl.getContext('2d');
 			var ctx = cout;
-
-			
-			
+		
 			// ctx.putImageData(imageData, dx, dy, dirtyX, dirtyY, dirtyWidth, dirtyHeight);
 		    // void ctx.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
-	
-	
-			
-
-
 
 			function define(part) {
 				//ctx.save();
@@ -710,7 +704,7 @@ document.addEventListener('DOMContentLoaded',function (){
 
 			function draw(v,c) {
 				c.clearRect(0,0,128,128);
-                var midpointx = 128 - playerx ;
+                var midpointx = 128 - playerx;
 				console.log(midpointx);
 				var parts = [];
 				var cx = midpointx;
@@ -777,11 +771,12 @@ document.addEventListener('DOMContentLoaded',function (){
 				var part = parts[0];
 				define(part);				
 				ctx.clip();
-				ctx.drawImage(v, part.x, part.y);				
+				ctx.drawImage(v, part.x, part.y, 64, 64, 0, 0, 64, 64);		
 				ctx.restore();
 
 				// draw bottom
-				c.drawImage(v,0,64,128,64,0,64,128,64);
+				// void ctx.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
+				c.drawImage(v,0,64,128,64,64,0,128,64);
 			
 
 				setTimeout(draw,20,v,c);
