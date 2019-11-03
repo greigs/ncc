@@ -174,168 +174,13 @@
 		// otherwise difficult to catch every case layout needs to be updated
 		function p8_update_layout()
 		{
-			var canvas = document.getElementById("canvas");
-			var p8_playarea = document.getElementById("p8_playarea");
-			var p8_container = document.getElementById("p8_container");
-			var p8_frame = document.getElementById("p8_frame");
-			var csize = 512;
-			var margin_top = 0;
-			var margin_left = 0;
-	
-			// page didn't load yet? first call should be after p8_frame is created
-			if (!canvas || !p8_playarea || !p8_container || !p8_frame)
-			{
-				requestAnimationFrame(p8_update_layout);
-				return;
-			}
-	
-			// assumes frame doesn't have padding
-			
-			var is_fullscreen=(document.fullscreenElement || document.mozFullScreenElement || document.webkitIsFullScreen || document.msFullscreenElement);
-			var frame_width = p8_frame.offsetWidth;
-			var frame_height = p8_frame.offsetHeight;
-	
-			if (is_fullscreen)
-			{
-				// same as window
-				frame_width = window.innerWidth;
-				frame_height = window.innerHeight;
-			}
-			else{
-				// never larger than window  // (happens when address bar is down in portraight mode on phone)
-				frame_width  = Math.min(frame_width, window.innerWidth);
-				frame_height = Math.min(frame_height, window.innerHeight);
-			}
-	
-			// as big as will fit in a frame..
-			csize =  128;//Math.min(frame_width,frame_height);
-	
-			// .. but never more than 2/3 of longest side for touch (e.g. leave space for controls on iPad)
-			if (p8_touch_detected && p8_is_running)
-			{
-				var longest_side = Math.max(window.innerWidth,window.innerHeight);
-				//csize = Math.min(csize, longest_side * 2/3);
-			}
-	
-			// pixel perfect: quantize to closest multiple of 128
-			// only when large display (desktop)
-			//if (frame_width >= 512 && frame_height >= 512)
-			//{
-				//csize = (csize+1) & ~0x7f;
-			//}
-	
-			if (is_fullscreen)
-			{
-				// always center horizontally
-				margin_left = (frame_width - csize)/2;
-	
-				if (p8_touch_detected)
-				{
-					if (window.innerWidth < window.innerHeight)
-					{
-						// portrait: keep at y=40 (avoid rounded top corners / camer num thing etc.)
-						margin_top = Math.min(40, frame_height - csize);
-					}
-					else
-					{
-						// landscape: put a little above vertical center
-						margin_top = (frame_height - csize)/4;
-					}
-				}
-				else{
-					// non-touch: center vertically
-					margin_top = (frame_height - csize)/2;
-				}
-			}		
-			
-			// mobile in portrait mode: put screen at top (w / a little space for fullscreen button)
-			// (don't cart about buttons overlapping screen)
-			if (p8_touch_detected && p8_is_running && document.body.clientWidth < document.body.clientHeight)
-				p8_playarea.style.marginTop = 32;
-			else if (p8_touch_detected && p8_is_running) // landscape: slightly above vertical center (only relevant for iPad / highres devices)
-				p8_playarea.style.marginTop = (document.body.clientHeight - csize) / 4;
-			else
-				p8_playarea.style.marginTop = "";
-	
-			canvas.style.width = csize;
-			canvas.style.height = csize;
-	
-			// to do: this should just happen from css layout
-			canvas.style.marginLeft = margin_left;
-			canvas.style.marginTop = margin_top;
-	
-			p8_container.style.width = csize;
-			p8_container.style.height = csize;
-	
-			// set menu buttons position to bottom right
-			el = document.getElementById("menu_buttons");
-			el.style.marginTop = csize - el.offsetHeight;
-	
-			if (p8_touch_detected && p8_is_running)
-			{
-				// turn off pointer events to prevent double-tap zoom etc (works on Android)
-				// don't want this for desktop because breaks mouse input & click-to-focus when using codo_textarea
-				canvas.style.pointerEvents = "none";
-	
-				p8_container.style.marginTop = "0px";
-	
-				// buttons
-				
-				// same as touch event handling
-				var w = window.innerWidth;
-				var h = window.innerHeight;
-	
-				// doesn't work -- viewport changes size according to 
-				//var w = document.body.clientWidth;
-				//var h = document.body.clientHeight;
-	
-				var r = Math.min(w,h) / 12;
-	
-				if (r > 40) r = 40;
-	
-				el = document.getElementById("controls_right_panel");
-				el.style.left = w-r*6;
-				el.style.top = h-r*7;
-				el.style.width = r*6;
-				el.style.height = r*7;
-				if (el.getAttribute("src") != p8_gfx_dat["controls_right_panel"]) // optimisation: avoid reload? (browser should handle though)
-					el.setAttribute("src", p8_gfx_dat["controls_right_panel"]);
-	
-				el = document.getElementById("controls_left_panel");
-				el.style.left = 0;
-				el.style.top = h-r*6;
-				el.style.width = r*6;
-				el.style.height = r*6;
-				if (el.getAttribute("src") != p8_gfx_dat["controls_left_panel"]) // optimisation: avoid reload? (browser should handle though)
-					el.setAttribute("src", p8_gfx_dat["controls_left_panel"]);
-				
-				// scroll to cart (need to stop running with X)
-				p8_frame.scrollIntoView(true);
-	
-				document.getElementById("touch_controls_gfx").style.display="table";
-				document.getElementById("touch_controls_background").style.display="table";
-	
-			}
-			else{
-				document.getElementById("touch_controls_gfx").style.display="none";
-				document.getElementById("touch_controls_background").style.display="none";
-			}
-	
-			if (!p8_is_running)
-			{
-				p8_playarea.style.display="none";
-				p8_container.style.display="flex";
-				p8_container.style.marginTop="auto";
-	
-				el = document.getElementById("p8_start_button");
-				if (el) el.style.display="flex";
-			}
-			requestAnimationFrame(p8_update_layout);
+		
+			//requestAnimationFrame(p8_update_layout);
 		}
 	
 	
 		var p8_touch_detected = false;
-		addEventListener("touchstart", function(event){p8_touch_detected = true; },  {passive: true});
+		//addEventListener("touchstart", function(event){p8_touch_detected = true; },  {passive: true});
 	
 		function p8_create_audio_context()
 		{
@@ -388,9 +233,9 @@
 	
 			// install touch events. These also serve to block scrolling / pinching / zooming on phones when p8_is_running
 				// moved event.preventDefault(); calls into pico8_buttons_event (want to let top buttons pass through)
-			addEventListener("touchstart", function(event){ pico8_buttons_event(event, 0); }, {passive: false});
-			addEventListener("touchmove",  function(event){ pico8_buttons_event(event, 1); }, {passive: false});
-			addEventListener("touchend",   function(event){ pico8_buttons_event(event, 2); }, {passive: false});
+			//addEventListener("touchstart", function(event){ pico8_buttons_event(event, 0); }, {passive: false});
+			//addEventListener("touchmove",  function(event){ pico8_buttons_event(event, 1); }, {passive: false});
+			//addEventListener("touchend",   function(event){ pico8_buttons_event(event, 2); }, {passive: false});
 	
 	
 			// load and run script
@@ -536,7 +381,6 @@
 		image-rendering: pixelated;
 		-ms-interpolation-mode: nearest-neighbor;
 		border: 0px;
-		cursor: none;
 	}
 	
 	
@@ -600,33 +444,13 @@
 				</div>
 	
 				<div style="display:flex; position:relative">
-					<canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault();" ></canvas>
-					<div id="menu_buttons" style="width:0px; height:164px">
-						<div class="p8_menu_button" style="position:relative; left:44px" id="p8b_controls" onClick="Module.pico8ToggleControlMenu();"></div>					
-						<div class="p8_menu_button" style="position:relative; left:44px" id="p8b_pause" onClick="Module.pico8TogglePaused();"></div>
-						<div class="p8_menu_button" style="position:relative; left:44px" id="p8b_sound" onClick="p8_create_audio_context(); Module.pico8ToggleSound();"></div>
-						<div class="p8_menu_button" style="position:relative; left:44px" id="p8b_full" onClick="p8_request_fullscreen();"></div>
-					</div>
+					<canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault();" width="128" height="64" ></canvas>
+				
 				</div>
 	
 	
 				<!-- display after first layout update -->
-				<div  id="touch_controls_gfx"
-					  style=" pointer-events:none; display:table; 
-							 position:fixed; top:0px; left:0px; border:0; width:100vw; height:100vh">
-	
-						<img src="" id="controls_right_panel" style="position:absolute; opacity:0.5;">
-						<img src="" id="controls_left_panel" style="position:absolute;  opacity:0.5;">
-							
 				
-				</div> <!-- touch_controls_gfx -->
-	
-				<script type="text/javascript">
-					
-	
-					
-				</script>
-	
 			</div> <!--p8_playarea -->
 	
 		</div> <!-- p8_container -->
@@ -648,15 +472,16 @@
 	
 		if (p8_autoplay)
 		{
-			var temp_context = new AudioContext();
+			p8_run_cart();
+			/* var temp_context = new AudioContext();
 			temp_context.onstatechange = function ()
 			{
 				if (temp_context.state=='running')
 				{
-					p8_run_cart();
+					
 					temp_context.close();
 				}
-			};
+			}; */
 		}
 		
 	</script>
