@@ -54,37 +54,7 @@
 	
 		function p8_update_button_icons()
 		{
-			// regenerate every frame (shouldn't be expensive?)
-			els = document.getElementsByClassName('p8_menu_button');
-			for (i = 0; i < els.length; i++)
-			{
-				el = els[i];
-				index = el.id;
-				if (index == 'p8b_sound') index += (pico8_state.sound_volume == 0 ? "0" : "1"); // 1 if undefined
-				if (index == 'p8b_pause') index += (pico8_state.is_paused > 0 ? "1" : "0");     // 0 if undefined
-				new_str = '<img width=24 height=24 style="pointer-events:none" src="'+p8_gfx_dat[index]+'">';
-				if (el.innerHTML != new_str)
-					el.innerHTML = new_str;
-	
-				// hide all buttons for touch mode (can pause with menu buttons)
-				
-				var is_visible = p8_is_running;
-	
-				if (!p8_touch_detected && el.parentElement.id == "menu_buttons_touch") 
-					is_visible = false;
-				if (p8_touch_detected && el.parentElement.id == "menu_buttons")
-					is_visible = false;
-	
-				var is_fullscreen=(document.fullscreenElement || document.mozFullScreenElement || document.webkitIsFullScreen || document.msFullscreenElement);
-				if (is_fullscreen) 
-					is_visible = false;
-	
-				if (is_visible)
-					el.style.display="";
-				else
-					el.style.display="none";
-			}
-			requestAnimationFrame(p8_update_button_icons);
+			
 		}
 	
 		function abs(x)
@@ -506,8 +476,8 @@
 	
 	
 	</script>
-	<script src="pico8-messenger.js"></script>
-	<script src="pico8-gpio-listener.js"></script>
+	<script src="carts/pico8-messenger.js"></script>
+	<script src="carts/pico8-gpio-listener.js"></script>
 	<STYLE TYPE="text/css">
 	<!--
 	.p8_menu_button{
@@ -569,19 +539,15 @@
 	</head>
 	
 	<body style="padding:0px; margin:0px; background-color:#222; color:#ccc">
+
 	
-	<!-- the itch app messes with the first found canvas // from @ultrabrite's shell-->
-	<canvas id="dummy4itchapp" style="position:absolute;visibility:hidden;width:0;height:0;"></canvas>
 	
 	
 	<div style="margin:0px"> <!-- optional div to limit size -->
+		
+		<canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault();" width="192" height="64"></canvas>
 	<div id="p8_frame" style="display:flex; margin:0px;">
 	
-		<div id="menu_buttons_touch" style="position:absolute; width:100%; z-index:10; left:0px;">
-			<div class="p8_menu_button" id="p8b_full"  style="float:left;margin-left:10px" onClick="p8_request_fullscreen();"></div>
-			<div class="p8_menu_button" id="p8b_sound" style="float:left;margin-left:10px" onClick="p8_create_audio_context(); Module.pico8ToggleSound();"></div>
-			<div class="p8_menu_button" id="p8b_close" style="float:right; margin-right:10px" onClick="p8_close_cart()"></div>
-		</div>
 	
 		<div id="p8_container"
 			style="margin:0px; display:table;"
@@ -635,7 +601,7 @@
 		</div> <!-- p8_container -->
 	
 	</div> <!-- p8_frame -->
-	<canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault();" width="192" height="64"></canvas>
+	
 	</div> <!-- size limit -->
 	
 	<script type="text/javascript">
@@ -643,9 +609,10 @@
 		p8_update_layout();
 		p8_update_button_icons();
 	
-		var canvas = document.getElementById("canvasin");
+		var canvasin = document.getElementById("canvasin");
 		Module = {};
-		Module.canvas = canvas;
+		Module.canvas = canvasin;
+		var canvas = document.getElementById("canvas");
 	
 		// from @ultrabrite's shell: test if an AudioContext can be created outside of an event callback.
 		// If it can't be created, then require pressing the start button to run the cartridge
@@ -703,9 +670,9 @@
 				ty = -64;
 	
 				function draw(v,c) {
-					c.clearRect(0,0,128,128);
+					//c.clearRect(0,0,64,64);
 					var midpointx = 128 - playerx;
-					console.log(midpointx);
+					//console.log(midpointx);
 					var parts = [];
 					var cx = midpointx;
 					var cy = 64;
