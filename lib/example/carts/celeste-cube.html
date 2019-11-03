@@ -602,6 +602,8 @@ canvas{
 
 			<div style="display:flex; position:relative">
 				<canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault();" ></canvas>
+				<canvas class="emscripten" id="canvas2" oncontextmenu="event.preventDefault();" ></canvas>
+				
 				<div id="menu_buttons" style="width:0px; height:164px">
 					<div class="p8_menu_button" style="position:relative; left:44px" id="p8b_controls" onClick="Module.pico8ToggleControlMenu();"></div>					
 					<div class="p8_menu_button" style="position:relative; left:44px" id="p8b_pause" onClick="Module.pico8TogglePaused();"></div>
@@ -667,6 +669,106 @@ var unsubscribe = gpio.subscribe(function(indices) {
   
 });
 	
+
+document.addEventListener('DOMContentLoaded',function (){
+			var cinEl = document.getElementById('canvas');
+			
+			var coutEl = document.getElementById('canvas2');
+			var cout = coutEl.getContext('2d');
+			var ctx = cout;
+
+			
+			
+			// ctx.putImageData(imageData, dx, dy, dirtyX, dirtyY, dirtyWidth, dirtyHeight);
+		    // void ctx.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
+	
+	
+			var parts = [];
+			var cx = 128 / 2;
+			var cy = 64;
+			var w = 128;
+			var h = 64;
+			parts.push({
+				x: 0,
+				y: 0,
+				points: [{
+					x: 0,
+					y: 0
+				}, {
+					x: cx,
+					y: cy
+				}, {
+					x: 0,
+					y: h
+				}]
+			});
+
+			parts.push({
+				x: 0,
+				y: 0,
+				points: [{
+					x: 64,
+					y: 64
+				}, {
+					x: 128,
+					y: 0
+				}, {
+					x: 128,
+					y: 64
+				}]
+			});
+
+
+
+			function define(part) {
+				//ctx.save();
+				ctx.translate(part.x, part.y);
+				ctx.beginPath();
+				var point = part.points[0];
+				ctx.moveTo(point.x, point.y);
+				for (var i = 0; i < part.points.length; i++) {
+					var point = part.points[i];
+					ctx.lineTo(point.x, point.y);
+				}
+				ctx.closePath();
+				//ctx.restore();
+			}
+
+			window.tx= 0;
+			window.ty= 0;
+
+			draw(cinEl,cout);
+
+
+			tx = -64;
+			ty = -64;
+
+			function draw(v,c) {
+				// draw bottom
+				c.drawImage(v,0,64,128,64,0,64,128,64);
+			
+			    // draw rotated right triangle
+			    ctx.save();
+				ctx.translate(-1 * window.tx, -1 * window.ty);
+				ctx.rotate((Math.PI / 180) * -90);
+				ctx.translate(window.tx, window.ty);
+				var part = parts[1];
+				define(part);
+				ctx.clip();
+				ctx.drawImage(v, part.x, part.y);
+				ctx.restore();
+				
+				// draw left triangle
+				ctx.save();
+				var part = parts[0];
+				define(part);				
+				ctx.clip();
+				ctx.drawImage(v, part.x, part.y);				
+				ctx.restore();
+
+				setTimeout(draw,20,v,c);
+			}
+});
 </script>
 
 <!-- uncomment this if you want clipboard access
