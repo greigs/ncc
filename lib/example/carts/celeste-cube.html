@@ -2,7 +2,7 @@
 <title>PICO-8 Cartridge</title>
 <meta name="viewport" content="width=device-width">
 <script type="text/javascript">
-
+	
 	// Default shell for PICO-8 0.1.12
 
 	// options
@@ -28,7 +28,7 @@
 	// var pico8_mouse = [0,0,0];
 
 	// When pico8_gpio is defined, reading and writing to gpio pins will read and write to these values
-	// var pico8_gpio = new Array(128);
+	var pico8_gpio = new Array(128);
 
 	// When pico8_audio_context context is defined, the html shell (this file) is responsible for creating and managing it
 	// Otherwise, PICO-8 will create its own one
@@ -506,7 +506,8 @@
 
 
 </script>
-
+<script src="pico8-messenger.js"></script>
+<script src="pico8-gpio-listener.js"></script>
 <STYLE TYPE="text/css">
 <!--
 .p8_menu_button{
@@ -635,7 +636,7 @@ canvas{
 </div> <!-- size limit -->
 
 <script type="text/javascript">
-
+	var playerx = 0;
 	p8_update_layout();
 	p8_update_button_icons();
 
@@ -658,6 +659,13 @@ canvas{
 			}
 		};
 	}
+
+	var gpio = getP8Gpio();
+var unsubscribe = gpio.subscribe(function(indices) {
+	playerx = readFromGpioUnsigned(gpio,4, 8)
+	console.log(playerx)
+  
+});
 	
 </script>
 

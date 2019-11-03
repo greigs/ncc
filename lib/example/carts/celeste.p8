@@ -31,6 +31,47 @@ k_down=3
 k_jump=4
 k_dash=5
 
+
+-- custom code --
+function write_gpio(num,pin_index,bits)
+ write_gpio_unsigned(
+  num + shl(1, bits-1),
+  pin_index,
+  bits
+ )
+end
+
+function write_gpio_unsigned(num,pin_index,bits)
+ local lastbit_i =
+  0x5f80+pin_index+bits-1
+ local mask = 1
+ for j=0,bits-1 do
+  local bit = shr(band(num, mask), j)
+  poke(lastbit_i-j, bit*255)
+  mask = shl(mask, 1)
+ end
+end
+
+function read_gpio(pin_index,bits)
+ return read_gpio_unsigned(
+  pin_index,
+  bits
+ ) - shl(1, bits-1)
+end
+
+function read_gpio_unsigned(pin_index,bits)
+ local firstbit_i =
+  0x5f80+pin_index
+ local num = 0
+ for j=0,bits-1 do
+  local val = peek(firstbit_i+j)
+  if val > 0 then
+   num = num + shl(1, bits-1-j)
+  end
+ end
+ return num
+end
+
 -- entry point --
 -----------------
 
@@ -1313,7 +1354,7 @@ function _draw()
 	
 	-- draw fg terrain
 	map(room.x * 16,room.y * 16,0,0,16,16,8)
-	
+
 	-- particles
 	foreach(particles, function(p)
 		p.x += p.spd
@@ -1344,12 +1385,12 @@ function _draw()
 
 
 	if plr ~=nil then
-			-- print(plr.y)
-			if plr.y < 32 then
-			  camera(0,0)
-			else 
-			  camera(0,plr.y - 32)
-			end
+		if plr.y < 32 then
+			--camera(0,0)
+		else 
+			--camera(0,plr.y - 32)
+		end
+		write_gpio_unsigned(plr.x, 4, 8)
 	end
 	
 	-- credits
