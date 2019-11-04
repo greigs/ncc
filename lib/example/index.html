@@ -670,7 +670,7 @@
 				ty = -64;
 	
 				function draw(v,c) {
-					//c.clearRect(0,0,64,64);
+					c.clearRect(0,0,64,64);
 					var midpointx = 128 - playerx;
 					//console.log(midpointx);
 					var parts = [];
@@ -707,15 +707,15 @@
 						points: [{
 							x: 64,
 							y: 64
-						}, 
-						{
-							x: cx - 64,
-							y: 64
+						}, {
+							x: 64,
+							y: 0
 						},
 						{
 							x: 128,
 							y: 0
-						}, {
+						},	
+						{
 							x: 128,
 							y: 64
 						}]
@@ -724,12 +724,19 @@
 					
 					// draw rotated right triangle
 					ctx.save();
-					ctx.translate(-1 * window.tx, -1 * window.ty);
-					ctx.rotate((Math.PI / 180) * -90);
-					ctx.translate(window.tx, window.ty);
+					ctx.translate(-64 + -32,-32)
+					//ctx.translate(-1 * 32, -1 * 32);
+					//ctx.rotate((Math.PI / 180) * -80);
+					ctx.translate(32, 32);
 					var part = parts[1];
 					define(part);
 					ctx.clip();
+
+					//ctx.translate(0, 0);
+					//ctx.rotate((Math.PI / 180) * 90);
+					//ctx.translate(0, -96 + -64);
+
+
 					ctx.drawImage(v, part.x, part.y);
 					ctx.restore();
 					
@@ -738,12 +745,19 @@
 					var part = parts[0];
 					define(part);				
 					ctx.clip();
+
+					ctx.translate(-32, -32);
+					ctx.rotate((Math.PI / 180) * 90);
+					ctx.translate(32, -96);
+
 					ctx.drawImage(v, part.x, part.y, 64, 64, 0, 0, 64, 64);		
 					ctx.restore();
 	
+
+
 					// draw bottom
 					// void ctx.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
-					c.drawImage(v,0,64,128,64,64,0,128,64);
+					//c.drawImage(v,0,64,128,64,64,0,128,64);
 				
 	
 					setTimeout(draw,20,v,c);
