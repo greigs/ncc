@@ -644,21 +644,24 @@
 				var coutEl = document.getElementById('canvas');
 				var cout = coutEl.getContext('2d');
 				var ctx = cout;
+				var osc = new OffscreenCanvas(64,64);
+				var oscc = osc.getContext('2d');
+
 			
 				// ctx.putImageData(imageData, dx, dy, dirtyX, dirtyY, dirtyWidth, dirtyHeight);
 				// void ctx.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
 	
 				function define(part) {
 					//ctx.save();
-					ctx.translate(part.x, part.y);
-					ctx.beginPath();
+					oscc.translate(part.x, part.y);
+					oscc.beginPath();
 					var point = part.points[0];
-					ctx.moveTo(point.x, point.y);
+					oscc.moveTo(point.x, point.y);
 					for (var i = 0; i < part.points.length; i++) {
 						var point = part.points[i];
-						ctx.lineTo(point.x, point.y);
+						oscc.lineTo(point.x, point.y);
 					}
-					ctx.closePath();
+					oscc.closePath();
 					//ctx.restore();
 				}
 	
@@ -670,7 +673,7 @@
 				ty = -64;
 	
 				function draw(v,c) {
-					c.clearRect(0,0,64,64);
+					//c.clearRect(0,0,64,64);
 					var midpointx = 128 - playerx;
 					//console.log(midpointx);
 					var parts = [];
@@ -721,39 +724,33 @@
 						}]
 					});
 	
+	
 					
 					// draw rotated right triangle
-					ctx.save();
-					ctx.translate(-64 + -32,-32)
-					//ctx.translate(-1 * 32, -1 * 32);
-					//ctx.rotate((Math.PI / 180) * -80);
-					ctx.translate(32, 32);
+					oscc.save();
+					oscc.translate(-1 * window.tx, -1 * window.ty);
+					oscc.rotate((Math.PI / 180) * -90);
+					oscc.translate(window.tx, window.ty);
 					var part = parts[1];
 					define(part);
-					ctx.clip();
-
-					//ctx.translate(0, 0);
-					//ctx.rotate((Math.PI / 180) * 90);
-					//ctx.translate(0, -96 + -64);
-
-
-					ctx.drawImage(v, part.x, part.y);
-					ctx.restore();
+					oscc.clip();
+					oscc.drawImage(v, part.x, part.y);
+					oscc.restore();
 					
 					// draw left triangle
-					ctx.save();
+					oscc.save();
 					var part = parts[0];
 					define(part);				
-					ctx.clip();
-
-					ctx.translate(-32, -32);
-					ctx.rotate((Math.PI / 180) * 90);
-					ctx.translate(32, -96);
-
-					ctx.drawImage(v, part.x, part.y, 64, 64, 0, 0, 64, 64);		
-					ctx.restore();
+					oscc.clip();
+					oscc.drawImage(v, part.x, part.y, 64, 64, 0, 0, 64, 64);		
+					oscc.restore();
 	
-
+					c.save();
+					c.translate(-32,-32);
+					c.rotate((Math.PI / 180) * 90);
+					c.translate(32,-64 + -32);
+					c.drawImage(osc, 0, 0);
+					c.restore();
 
 					// draw bottom
 					// void ctx.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
