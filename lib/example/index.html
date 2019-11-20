@@ -606,6 +606,9 @@
 	
 	<script type="text/javascript">
 		var playerx = 0;
+		var playery = 0;
+		var playerz = 0;
+		var cside = 0;
 		p8_update_layout();
 		p8_update_button_icons();
 	
@@ -613,10 +616,7 @@
 		Module = {};
 		Module.canvas = canvasin;
 		var canvas = document.getElementById("canvas");
-	
-		// from @ultrabrite's shell: test if an AudioContext can be created outside of an event callback.
-		// If it can't be created, then require pressing the start button to run the cartridge
-	
+		
 		if (p8_autoplay)
 		{
 			var temp_context = new AudioContext();
@@ -632,9 +632,13 @@
 	
 		var gpio = getP8Gpio();
 	var unsubscribe = gpio.subscribe(function(indices) {
-		playerx = readFromGpioUnsigned(gpio,4, 8)
-		//console.log(playerx)
+		cside   = readFromGpioUnsigned(gpio,4, 8);
+		playerx = readFromGpioUnsigned(gpio,12, 8);
+		playery = readFromGpioUnsigned(gpio,20, 8);
+		playerz = readFromGpioUnsigned(gpio,28, 8);
+		console.log("side:" + cside + " " + playerx + " " + playery + " " + playerz);
 	  
+
 	});
 		
 	

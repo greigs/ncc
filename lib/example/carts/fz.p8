@@ -69,7 +69,7 @@ function supdate()
 sfront,sleft,sback,sright = side==0,side==1,side==2,side==3
 end
 --area
-atrans,atmax,achange,anext,transcolor = 0,12,false,nsplit("0,0,0,0,0"),nsplit("6,6,5,4,5,3,2,2")
+atrans,atmax,achange,anext,transcolor = 0,12,false,nsplit("0,0,0,0,0"),nsplit("0,0,0,0,0,0,0,0")
 -- anext: {area id,side,px,py,pz}
 a_sky,skycolor,cldcolor,cloud_y = {},nsplit("12,12,1,14,5,3,2,1"),nsplit("7,6,5,2,1,5,1,15"),nsplit("28,45,3,97,76,100,106,12")
 --idle+input
@@ -705,10 +705,9 @@ pgetpos()
 end
 
 function rotate()
-r_wait += 1
+r_wait += 0.25
 if r_wait == 5 then
  side = (side+4+r_dir)%4
- wgpiou(side, 4, 8)
  supdate()
  if not title then
   p_open = false
@@ -789,6 +788,9 @@ if p_zreal < 0 then
     end
  end
 end
+wgpiou(p_xreal, 12, 8)
+wgpiou(p_yreal, 20, 8)
+wgpiou(p_zreal, 28, 8)
 end
 
 function move_player()
@@ -798,10 +800,12 @@ if intro >= 85 then
  --rotate right
  if btn(5) and p_landed then
   r_dir,r_wait = n1,0
+  wgpiou((side+4+r_dir)%4, 4, 8)
   sfx(11)
  --rotate left
  elseif btn(4) and p_landed then
   r_dir,r_wait = 1,0
+  wgpiou((side+4+r_dir)%4, 4, 8) 
   sfx(10)
  else
   --move
